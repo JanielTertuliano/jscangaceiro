@@ -63,8 +63,12 @@
     <script>
 
         var n1 = new Negociacao(new Date, 7, 10);
-        var volume = n1.obtemVolume();
-        console.log(volume);
+        		
+        console.log(n1.data);
+        
+        n1.data.setDate(11)
+
+        console.log(n1.data);			
 
     </script>
 </body>
