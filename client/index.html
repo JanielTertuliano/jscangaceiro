@@ -62,11 +62,13 @@
     <script src="app/domain/negociacao/Negociacao.js"></script>
     <script>
 
-        var n1 = new Negociacao(new Date, 7, 10);
+        let hoje = new Date();
+
+        let n1 = new Negociacao(hoje, 7, 10);
         		
         console.log(n1.data);
         
-        n1.data.setDate(11)
+        hoje.setDate(11)
 
         console.log(n1.data);			
 
