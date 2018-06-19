@@ -12,10 +12,10 @@ class Negociacoes {
     }
 
     get volumeTotal() {
-        let total = 0;
+        return this._negociacoes.reduce((total, negociacao) => total + negociacao.volume, 0);
+    }
 
-        this._negociacoes.reduce((total, negociacao) => total + negociacao.volume, 0);
-
-        return total;
+    set texto(texto) {
+        this._texto = texto;
     }
 }
