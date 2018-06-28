@@ -55,5 +55,16 @@
     <script src="app/ui/models/Mensagem.js"></script>
     <script src="app/ui/views/MensagemView.js"></script>
     <script src="app/app.js"></script>
+
+    <script>
+        negociacao = new Proxy(new Negociacao(new Date(), 1, 100), {
+            get: function(target, prop, receiver) {
+                console.log(`a propriedade "${prop}" caiu na armadilha!`)
+            }
+        });
+
+        console.log(negociacao.quantidade);
+        console.log(negociacao.valor);
+    </script>
 </body>
 </html>
