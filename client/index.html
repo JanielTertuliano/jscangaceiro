@@ -44,7 +44,7 @@
     <br>
     <br>
     
-    <div id="negociacoes"></div>    
+    <div id="negociacoes"></div>
 
     <script src="app/domain/negociacao/Negociacao.js"></script>
     <script src="app/controllers/NegociacaoController.js"></script>
@@ -57,14 +57,13 @@
     <script src="app/app.js"></script>
 
     <script>
-        negociacao = new Proxy(new Negociacao(new Date(), 1, 100), {
-            get: function(target, prop, receiver) {
-                console.log(`a propriedade "${prop}" caiu na armadilha!`)
-            }
-        });
+        const negociacoes = new Proxy(new Negociacoes(), {
+            set(target, prop, value, receiver) {
+                console.log(`${prop} guarda ${target[prop]}, receberá ${value}`);
 
-        console.log(negociacao.quantidade);
-        console.log(negociacao.valor);
+                return Reflect.set(target, prop, value);
+            }
+        })
     </script>
 </body>
 </html>
