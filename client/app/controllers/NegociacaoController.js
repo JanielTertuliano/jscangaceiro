@@ -6,7 +6,8 @@ class NegociacaoController {
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
         
-        const self = this;
+        this._service = new NegociacaoService();
+
         this._negociacoes = new Bind(
             new Negociacoes(),
             new NegociacoesView('#negociacoes'),
@@ -77,24 +78,18 @@ class NegociacaoController {
 
     importaNegociacoes() {
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'negociacoes/semana');
+        this._service.obterNegociacoesDaSemana((err, negociacoes) => {
 
-        xhr.onreadystatechange = () => {
-
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-
-                    console.log('Obtendo as negociações do servidor.');
-                    console.log(JSON.parse(xhr.responseText));
-                } else {
-
-                    console.log(xhr.responseText);
-                    this._mensagem.texto = 'Não foi possível obter as negociações da semana';
-                }
+            if (err) {
+                this._mensagem.texto = 'Não foi possivel obter as negociações da semana';
+                return;
             }
-        };
 
-        xhr.send();
+            negociacoes.forEach(negociacao => 
+                this._negociacoes.adiciona(negociacao));
+
+            this._mensagem.texto = 'Negociações importadas com sucesso';
+            
+        });
     }
 }
