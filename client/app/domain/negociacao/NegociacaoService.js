@@ -1,30 +1,39 @@
 class NegociacaoService {
+
+    constructor() {
+
+        this._http = new HttpService();
+    }
     
-    obterNegociacoesDaSemana(cb) {
+    obtemNegociacoesDaSemana() {
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'negociacoes/semana');
+        return this._http
+            .get('negociacoes/semana')
+            .then(dados => {
+                
+                const negociacoes = dados.map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor));
+                
+                return negociacoes;
+            })
+            .catch(err =>  {
 
-        xhr.onreadystatechange = () => {
+                throw new Error('Não foi possível obter as negociações da semana');
+            });
+    }
 
-            if (xhr.readyState == 4) {
+    obtemNegociacoesDaSemanaAnterior() {
 
-                if (xhr.status == 200) {
+        return this._http
+            .get('negociacoes/anterior')
+            .then(dados => {
 
-                    const negociacoes = JSON
-                        .parse(xhr.responseText)
-                        .map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor));
+                const negociacoes = dados.map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor));
 
-                    cb(null, negociacoes);
+                return negociacoes;
+            })
+            .catch(err => {
 
-                } else {
-
-                    console.log(xhr.responseText);
-
-                    cb('Não foi possivel obter nas negociações da semana', null);
-                }
-            }
-        };
-        xhr.send();
+                throw new Error('Não foi possível obter as negociações da semana anterior');
+            })
     }
 }
