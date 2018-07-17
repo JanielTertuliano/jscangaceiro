@@ -6,7 +6,34 @@
 </head>
 <body>
     <script>
+
+        const connection = null;
         
+        const openRequest = indexedDB.open("jscangaceiro", 1);
+        
+        openRequest.onupgradeneeded = e => {
+            console.log('Cria ou altera um banco já existente!');
+
+            connection = e.target.result;
+            
+            if (connection.objectStoreNames.contains('negociacoes')) {
+                connection.deleteObjectStore('negociacoes');
+
+            } else {
+                connection.createObjectStore('negociacoes', { autoIncrement: true });
+            }
+        };
+
+        openRequest.onsuccess = e => {
+            console.log('Conexão obtida com sucesso!');
+
+            connection = e.target.result;
+        };
+
+        openRequest.onerror = e => {
+            console.log(e.target.error);
+        };
+
     </script>
 </body>
 </html>
