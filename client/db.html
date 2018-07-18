@@ -7,9 +7,9 @@
 <body>
     <script>
 
-        const connection = null;
+        let connection = null;
         
-        const openRequest = indexedDB.open("jscangaceiro", 1);
+        const openRequest = indexedDB.open("jscangaceiro", 2);
         
         openRequest.onupgradeneeded = e => {
             console.log('Cria ou altera um banco já existente!');
@@ -34,6 +34,56 @@
             console.log(e.target.error);
         };
 
+        function adiciona() {
+
+            const negociacao = new Negociacao(new Date(), 200, 1);
+            const request = connection
+                .transaction(['negociacoes'], 'readwrite')
+                .objectStore('negociacoes')
+                .add(negociacao);
+
+            request.onsuccess = e => 
+                console.log('negocição salva com sucesso');
+
+            request.onerror = e => 
+                console.log('Não foi possivel salvar a negociação');
+            
+        }
+
+        function listarTodos() {
+
+            const negociacoes = [];
+            const cursor = connection
+                .transaction(['negociacoes'], 'readwrite')
+                .objectStore('negociacoes')
+                .openCursor();
+
+            cursor.onsuccess = e => {
+
+                let atual = e.target.result;
+
+                if (atual) {
+
+                    const negociacao = new Negociacao(
+                        atual.value._data,
+                        atual.value._quantidade,
+                        atual.value._valor
+                    );
+
+                    negociacoes.push(negociacao);
+
+                    atual.continue();
+
+                } else {
+
+                    console.log(negociacoes);
+                }
+            };
+
+            cursor.onerror = e => console.log('Error: ' + e.target.error.name);
+        }
+
     </script>
+    <script src="app/domain/negociacao/Negociacao.js"></script>
 </body>
 </html>
