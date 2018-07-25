@@ -16,7 +16,7 @@ class NegociacaoDao {
                 .objectStore(this._store)
                 .add(negociacao);
 
-            request.onsucess = e => resolve();
+            request.onsuccess = e => resolve();
             request.onerror = e => {
 
                 console.log(e.target.error);
@@ -37,13 +37,13 @@ class NegociacaoDao {
                 .objectStore(this._store)
                 .openCursor();
 
-            cursor.onsucess = e => {
+            cursor.onsuccess = e => {
 
                 const atual = e.target.result;
 
                 if (atual) {
 
-                    const negociacao = new NegociacaoDao(
+                    const negociacao = new Negociacao(
                         atual.value._data,
                         atual.value._quantidade,
                         atual.value._valor);
