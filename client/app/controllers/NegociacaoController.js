@@ -31,14 +31,14 @@ class NegociacaoController {
 
     _init() {
 
-        DaoFactory
-            .getNegociacaoDao()
+        getNegociacaoDao()
             .then(dao => dao.listaTodos())
             .then(negociacoes => {
-                console.log(negociacoes)
+
                 negociacoes.forEach(negociacao => {
+
                     this._negociacoes.adiciona(negociacao)
-                })
+                });
             })
             .catch(err => this._mensagem.texto = err);
     }
@@ -51,8 +51,7 @@ class NegociacaoController {
 
             const negociacao = this._criaNegociacao();
 
-            DaoFactory
-                .getNegociacaoDao()
+            getNegociacaoDao()
                 .then(dao => dao.adiciona(negociacao))
                 .then(() => {
 
@@ -100,9 +99,14 @@ class NegociacaoController {
     }
 
     apaga() {
-        this._negociacoes.esvazia();
-        // this._negociacoesView.update(this._negociacoes);
-        this._mensagem.texto = 'Negociações apagadas com sucesso';
+        
+        getNegociacaoDao()
+            .then(dao => dao.apagaTodos())
+            .then(() => {
+                this._negociacoes.esvazia();
+                this._mensagem.texto = 'Negociações apagadas com sucesso!';
+            })
+            .catch(err => this._mensagem.texto = err);
     }
 
     importaNegociacoes() {
@@ -120,29 +124,6 @@ class NegociacaoController {
                 this._mensagem.texto = 'Negociações importadas com sucesso';
             })
             .catch(err => this._mensagem.texto = err);
-
-        // this._service.obtemNegociacoesDaSemana()
-        //     .then(semana => {
-
-        //         negociacoes.push(...semana);
-
-        //         return this._service.obtemNegociacoesDaSemanaAnterior();
-                
-        //     })
-        //     .then(anterior => {
-
-        //         negociacoes.push(...anterior);
-
-        //         return this._service.obtemNegociacoesDaSemanaRetrasada();
-        //     })
-        //     .then(retrasada => {
-
-        //         negociacoes.push(...retrasada);
-        //         negociacoes.forEach(negociacao => this._negociacoes.adiciona(negociacao));
-
-        //         this._mensagem.texto = 'Negociações importadas com sucesso'
-        //     })
-        //     .catch(err => this._mensagem.texto = err);
 
     }
 
