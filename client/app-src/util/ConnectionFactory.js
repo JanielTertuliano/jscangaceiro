@@ -4,59 +4,65 @@ let close = null;
 
 export class ConnectionFactory {
 
-construtor() {
+    constructor() {
 
-    throw new Error('Não é possivel criar instâncias dessa classe');
-}
+        throw new Error('Não é possível criar instâncias dessa classe');
+    }
 
-static getConnection() {
-    return new Promise((resolve, reject) => {
+    static getConnection() {
 
-        if (connection) return resolve(connection);
+        return new Promise((resolve, reject) => {
 
-        const openRequest = indexedDB.open('jscangaceiro', 2);
-        
-        openRequest.onupgradeneeded = e => {
+            if (connection) return resolve(connection);
 
-            ConnectionFactory._createStores(e.target.result);
-        };
+            const openRequest = indexedDB.open('jscangaceiro', 2);
 
-        openRequest.onsuccess = e => {
+            openRequest.onupgradeneeded = e => {
 
-            connection = e.target.result;
-            close = connection.close.bind(connection);
-            connection.close = () => {
-                throw new Error('Você não pode fechar diretamente a conexão');
+                ConnectionFactory._createStores(e.target.result);
+
             };
 
-            resolve(e.target.result);
-        };
+            openRequest.onsuccess = e => {
 
-        openRequest.onerror = e => {
+                connection = e.target.result;
 
-            console.log(e.target.error);
+                close = connection.close.bind(connection);
 
-            reject(e.target.error.name);
-        };
-    });
-}
+                connection.close = () => {
+                    throw new Error('Você não pode fechar diretamente a conexão');
+                };
 
-static _createStores(connection) {
+                resolve(e.target.result);
 
-    stores.forEach(store => {
+            };
 
-        if (connection.objectStoreNames.contains(store))
-            connection.deleteObjectStore(store);
+            openRequest.onerror = e => {
 
-        connection.createObjectStore(store, { autoIncrement: true });
-    });
-}
+                console.log(e.target.error)
+                reject(e.target.error.name)
 
-static closeConnection() {
+            };
 
-    if (connection) {
-        close();
+        });
+    }
 
+    static _createStores(connection) {
+
+        stores.forEach(store => {
+
+            if (connection.objectStoreNames.contains(store))
+                connection.deleteObjectStore(store);
+
+            connection.createObjectStore(store, { autoIncrement: true });
+        });
+    }
+
+    static closeConnection() {
+
+        if (connection) {
+            close();
+        }
     }
 }
-}
+

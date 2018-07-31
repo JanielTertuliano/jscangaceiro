@@ -1,4 +1,4 @@
-import { Negociacao } from './Negociacao';
+import { Negociacao } from './Negociacao.js';
 
 export class NegociacaoDao {
 
@@ -6,11 +6,11 @@ export class NegociacaoDao {
 
         this._connection = connection;
         this._store = 'negociacoes';
-
     }
 
+
     adiciona(negociacao) {
-        
+
         return new Promise((resolve, reject) => {
 
             const request = this._connection
@@ -25,9 +25,7 @@ export class NegociacaoDao {
                 reject('Não foi possível salvar a negociação');
             }
         });
-
     }
-
     listaTodos() {
 
         return new Promise((resolve, reject) => {
@@ -60,32 +58,29 @@ export class NegociacaoDao {
             };
 
             cursor.onerror = e => {
-
                 console.log(e.target.error);
-                reject('Não foi possível listar as negociações');
-            };
+                reject('Não foi possível listar nas negociações');
+            }
 
         });
-
     }
 
     apagaTodos() {
-         
+
         return new Promise((resolve, reject) => {
 
             const request = this._connection
                 .transaction([this._store], 'readwrite')
                 .objectStore(this._store)
                 .clear();
-            
+
             request.onsuccess = e => resolve();
 
             request.onerror = e => {
-
                 console.log(e.target.error);
-                reject('Não foi possivel apagar as negociações');
-
+                reject('Não foi possível apagar as negociações');                
             };
+
         });
-    }
+    }    
 }
