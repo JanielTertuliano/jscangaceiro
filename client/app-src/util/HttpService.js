@@ -1,30 +1,41 @@
 export class HttpService {
 
+    _handleErros(res) {
+
+        if (!res.ok) throw new Error(res.statusText);
+
+        return res;
+    }
+
     get(url) {
 
-        return new Promise((resolve, reject) => {
+        return fetch(url)
+            .then(res => this._handleErros(res))
+            .then(res => res.json());
 
-            const xhr = new XMLHttpRequest();
+        // return new Promise((resolve, reject) => {
 
-            xhr.open('GET', url);
+        //     const xhr = new XMLHttpRequest();
 
-            xhr.onreadystatechange = () => {
+        //     xhr.open('GET', url);
 
-                if (xhr.readyState == 4) {
+        //     xhr.onreadystatechange = () => {
 
-                    if (xhr.status == 200) {
+        //         if (xhr.readyState == 4) {
 
-                        resolve(JSON.parse(xhr.responseText));
-                    } else {
+        //             if (xhr.status == 200) {
 
-                        console.log(xhr.responseText);
-                        reject(xhr.responseText);
-                    }
-                }
-            };
+        //                 resolve(JSON.parse(xhr.responseText));
+        //             } else {
 
-            xhr.send();
+        //                 console.log(xhr.responseText);
+        //                 reject(xhr.responseText);
+        //             }
+        //         }
+        //     };
 
-        });
+        //     xhr.send();
+
+        // });
     }
 }
